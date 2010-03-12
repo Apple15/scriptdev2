@@ -9,3 +9,37 @@ ConfVersion=2009040501
 #          .;/path/to/unix_socket;username;password;database - use Unix sockets at Unix/Linux
 #                Unix sockets: experimental, not tested
 ScriptDev2DatabaseInfo     = "127.0.0.1;3306;mangos;mangos;scriptdev2"
+
+################################################################################################
+# TeleportMaster Custom Config Options
+#
+#    TeleportMaster.OnlyGMs
+#        Players are not allowed to use the TeleportMaster if this is enabled
+#        Default: 0 - Disable
+#                 1 - Enable
+#
+################################################################################################
+
+TeleportMaster.OnlyGMs = 0
+
+################################################################################################
+# ZenMaster Custom Config options
+#
+#    ZenMaster.OnlyGMs
+#        Only GMs can use the NPC if this is enabled
+#        Default: 0 - Disable
+#                 1 - Enable
+#
+#    ZenMaster.Cost
+#        Cost in copper that player need to pay to summon their class trainer
+#        Default: 100000 (10 gold)
+#
+#    ZenMaster.EnableSummonStone
+#        Toggles the ability to use the 'Zen  Master Summon Stone'
+#        Default: 1 - Enable
+#                 0 - Disable
+################################################################################################
+
+ZenMaster.OnlyGMs           = 0
+ZenMaster.Cost              = 100000
+ZenMaster.EnableSummonStone = 1

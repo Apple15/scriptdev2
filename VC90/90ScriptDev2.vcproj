@@ -414,6 +414,10 @@
 						RelativePath="..\scripts\custom\kingdutka\TeleportMaster.cpp"
 						>
 					</File>
+					<File
+						RelativePath="..\scripts\custom\kingdutka\ZenMaster.cpp"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter

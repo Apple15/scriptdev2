@@ -9,6 +9,7 @@ extern void AddSC_battleground();
 
 //custom
 extern void AddSC_TeleportMaster();
+extern void AddSC_ZenMaster();
 
 //examples
 extern void AddSC_example_creature();
@@ -414,6 +415,7 @@ void AddScripts()
 
     //custom
 	AddSC_TeleportMaster();
+	AddSC_ZenMaster();
 
     //examples
     AddSC_example_creature();
