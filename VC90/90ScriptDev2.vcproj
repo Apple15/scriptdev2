@@ -403,6 +403,10 @@
 			<Filter
 				Name="custom"
 				>
+				<File
+					RelativePath="..\scripts\custom\buffnpc.cpp"
+					>
+				</File>
 				<Filter
 					Name="kingdutka"
 					>
