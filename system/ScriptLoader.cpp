@@ -11,6 +11,7 @@ extern void AddSC_battleground();
 extern void AddSC_TeleportMaster();
 extern void AddSC_ZenMaster();
 extern void AddSC_buffnpc();
+extern void AddSC_npc_morph();
 
 //examples
 extern void AddSC_example_creature();
@@ -418,6 +419,7 @@ void AddScripts()
 	AddSC_TeleportMaster();
 	AddSC_ZenMaster();
 	AddSC_buffnpc();
+	AddSC_npc_morph();
 
     //examples
     AddSC_example_creature();

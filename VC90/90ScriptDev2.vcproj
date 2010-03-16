@@ -407,6 +407,10 @@
 					RelativePath="..\scripts\custom\buffnpc.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\scripts\custom\morphnpc.cpp"
+					>
+				</File>
 				<Filter
 					Name="kingdutka"
 					>
