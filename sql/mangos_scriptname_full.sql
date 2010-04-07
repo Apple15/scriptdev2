@@ -9,9 +9,9 @@ DELETE FROM areatrigger_scripts WHERE entry=3066;
 INSERT INTO areatrigger_scripts VALUES (3066,'at_ravenholdt');
 DELETE FROM areatrigger_scripts WHERE entry IN (4871, 4872, 4873);
 INSERT INTO areatrigger_scripts VALUES
-(4871,'at_warsong_grainery'),
-(4872,'at_torp_farm'),
-(4873,'at_warsong_slaughterhouse');
+(4871,'at_warsong_farms'),
+(4872,'at_warsong_farms'),
+(4873,'at_warsong_farms');
 DELETE FROM areatrigger_scripts WHERE entry BETWEEN 5284 AND 5287;
 INSERT INTO areatrigger_scripts VALUES
 (5284,'at_aldurthar_gate'),
@@ -20,6 +20,8 @@ INSERT INTO areatrigger_scripts VALUES
 (5287,'at_aldurthar_gate');
 DELETE FROM areatrigger_scripts WHERE entry=4112;
 INSERT INTO areatrigger_scripts VALUES (4112,'at_naxxramas');
+DELETE FROM areatrigger_scripts WHERE entry=5108;
+INSERT INTO areatrigger_scripts VALUES (5108,'at_stormwright_shelf');
 
 /* BATTLEGROUNDS */
 UPDATE creature_template SET ScriptName='npc_spirit_guide' WHERE entry IN (13116, 13117);
@@ -642,7 +644,7 @@ UPDATE creature_template SET ScriptName='boss_roar' WHERE entry=17546;
 UPDATE creature_template SET ScriptName='boss_crone' WHERE entry=18168;
 UPDATE creature_template SET ScriptName='boss_terestian_illhoof' WHERE entry=15688;
 UPDATE creature_template SET ScriptName='boss_shade_of_aran' WHERE entry=16524;
--- UPDATE creature_template SET ScriptName='boss_netherspite' WHERE entry=15689;
+UPDATE creature_template SET ScriptName='boss_netherspite' WHERE entry=15689;
 UPDATE creature_template SET ScriptName='boss_malchezaar' WHERE entry=15690;
 -- UPDATE creature_template SET ScriptName='boss_nightbane' WHERE entry=17225;
 UPDATE creature_template SET ScriptName='boss_baroness_dorothea_millstipe' WHERE entry=19875;
@@ -808,7 +810,7 @@ UPDATE creature_template SET ScriptName='boss_amnennar_the_coldbringer' WHERE en
 UPDATE creature_template SET ScriptName='npc_henry_stern' WHERE entry=8696;
 
 /* REDRIDGE MOUNTAINS */
-
+UPDATE creature_template SET ScriptName='npc_corporal_keeshan' WHERE entry=349;
 
 /* RUINS OF AHN'QIRAJ */
 UPDATE instance_template SET script='instance_ruins_of_ahnqiraj' WHERE map=509;
@@ -1067,6 +1069,8 @@ UPDATE creature_template SET ScriptName='npc_calvin_montague' WHERE entry=6784;
 UPDATE creature_template SET ScriptName='boss_ironaya' WHERE entry=7228;
 UPDATE creature_template SET ScriptName='mob_jadespine_basilisk' WHERE entry=4863;
 UPDATE creature_template SET ScriptName='npc_lore_keeper_of_norgannon' WHERE entry=7172;
+UPDATE gameobject_template SET ScriptName='go_altar_of_keepers' WHERE entry=130511;
+UPDATE instance_template SET script='instance_uldaman' WHERE map=70;
 
 /*  */
 /* ULDUAR */
