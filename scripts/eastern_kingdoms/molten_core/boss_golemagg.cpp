@@ -108,7 +108,7 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
         if (m_uiBuffTimer < uiDiff)
         {
             DoCastSpellIfCan(m_creature, SPELL_GOLEMAGG_TRUST);
-            m_uiBuffTimer = 2.5*IN_MILLISECONDS;
+            m_uiBuffTimer = 2.5*IN_MILISECONDS;
         }
         else
             m_uiBuffTimer -= uiDiff;

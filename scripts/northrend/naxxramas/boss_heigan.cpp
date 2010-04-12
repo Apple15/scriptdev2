@@ -56,12 +56,12 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
 {
     boss_heiganAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (instance_naxxramas*)pCreature->GetInstanceData();
+		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    instance_naxxramas* m_pInstance;
+	ScriptedInstance* m_pInstance;
     bool m_bIsRegularMode;
 
     uint8 m_uiPhase;

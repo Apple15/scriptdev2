@@ -308,7 +308,7 @@ struct MANGOS_DLL_DECL boss_janalaiAI : public ScriptedAI
 
             //workaround part
             //m_creature->GetRandomPoint(m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), fRadius+(fRadius*i), fX, fY, fZ);
-            //m_creature->SummonCreature(NPC_FIRE_BOMB, fX, fY, fZ, 0.0f, TEMPSUMMON_TIMED_DESPAWN, MINUTE*IN_MILLISECONDS);
+            //m_creature->SummonCreature(NPC_FIRE_BOMB, fX, fY, fZ, 0.0f, TEMPSUMMON_TIMED_DESPAWN, MINUTE*IN_MILISECONDS);
         }
 
         ++m_uiBombCounter;

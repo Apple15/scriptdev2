@@ -145,7 +145,13 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
         m_bDrinkInturrupted = false;
 
         if (m_pInstance)
+        {
+            // Not in progress
             m_pInstance->SetData(TYPE_ARAN, NOT_STARTED);
+
+            if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_LIBRARY_DOOR)))
+                pDoor->SetGoState(GO_STATE_ACTIVE);
+        }
     }
 
     void KilledUnit(Unit* pVictim)
@@ -158,7 +164,12 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
 
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_ARAN, DONE);
+
+            if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_LIBRARY_DOOR)))
+                pDoor->SetGoState(GO_STATE_ACTIVE);
+        }
     }
 
     void Aggro(Unit* pWho)
