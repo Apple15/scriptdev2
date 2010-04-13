@@ -106,6 +106,7 @@ void SendDefaultMenu_npc_morph(Player* pPlayer, Creature* pCreature, uint32 uiAc
 		break;
 	case 1014: //De Morph
 		pPlayer->DeMorph();
+		pPlayer->CLOSE_GOSSIP_MENU();
 		break;
 
 	}
