@@ -41,16 +41,18 @@ enum
     SPELL_SLIMEBOLT       = 32309
 };
 
+const float MELEE_DISTANCE = 5.0;
+
 struct MANGOS_DLL_DECL boss_patchwerkAI : public ScriptedAI
 {
     boss_patchwerkAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (instance_naxxramas*)pCreature->GetInstanceData();
+        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    instance_naxxramas* m_pInstance;
+    ScriptedInstance* m_pInstance;
     bool m_bIsRegularMode;
 
     uint32 m_uiHatefulStrikeTimer;
@@ -62,7 +64,7 @@ struct MANGOS_DLL_DECL boss_patchwerkAI : public ScriptedAI
     void Reset()
     {
         m_uiHatefulStrikeTimer = 1000;                      //1 second
-        m_uiBerserkTimer = MINUTE*6*IN_MILLISECONDS;         //6 minutes
+        m_uiBerserkTimer = MINUTE*6*IN_MILISECONDS;         //6 minutes
         m_uiSlimeboltTimer = 10000;
         m_bEnraged = false;
         m_bBerserk = false;
@@ -109,11 +111,11 @@ struct MANGOS_DLL_DECL boss_patchwerkAI : public ScriptedAI
         for (ThreatList::const_iterator iter = tList.begin();iter != tList.end(); ++iter)
         {
             if (!uiTargets)
-                break;
+                return;
 
             if (Unit* pTempTarget = Unit::GetUnit((*m_creature), (*iter)->getUnitGuid()))
             {
-                if (pTempTarget->GetHealth() > uiHighestHP && m_creature->IsWithinDistInMap(pTempTarget, ATTACK_DISTANCE))
+                if (pTempTarget->GetHealth() > uiHighestHP && m_creature->IsWithinDistInMap(pTempTarget, MELEE_DISTANCE))
                 {
                     uiHighestHP = pTempTarget->GetHealth();
                     pTarget = pTempTarget;
@@ -144,7 +146,7 @@ struct MANGOS_DLL_DECL boss_patchwerkAI : public ScriptedAI
         // Soft Enrage at 5%
         if (!m_bEnraged)
         {
-            if (m_creature->GetHealthPercent() < 5.0f)
+            if (m_creature->GetHealth()*20 < m_creature->GetMaxHealth())
             {
                 DoCastSpellIfCan(m_creature, SPELL_ENRAGE);
                 DoScriptText(EMOTE_ENRAGE, m_creature);
