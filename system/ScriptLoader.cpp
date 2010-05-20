@@ -14,6 +14,7 @@ extern void AddSC_buffnpc();
 extern void AddSC_npc_morph();
 extern void AddSC_custom_npc_guildmaster();
 extern void AddSC_npc_custom_items();
+extern void AddSC_item_talent_point();
 
 //examples
 extern void AddSC_example_creature();
@@ -472,6 +473,7 @@ void AddScripts()
 	AddSC_npc_morph();
 	AddSC_custom_npc_guildmaster();
 	AddSC_npc_custom_items();
+	AddSC_item_talent_point();
 
     //examples
     AddSC_example_creature();

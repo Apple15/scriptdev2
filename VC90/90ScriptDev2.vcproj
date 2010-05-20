@@ -416,6 +416,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\scripts\custom\item_talent_point.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\scripts\custom\morphnpc.cpp"
 					>
 				</File>
