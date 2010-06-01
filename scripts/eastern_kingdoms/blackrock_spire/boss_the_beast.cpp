@@ -23,67 +23,57 @@ EndScriptData */
 
 #include "precompiled.h"
 
-enum
-{
-    SPELL_FLAMEBREAK     = 16785,
-    SPELL_IMMOLATE       = 20294,
-    SPELL_TERRIFYINGROAR = 14100
-};
+#define SPELL_FLAMEBREAK            16785
+#define SPELL_IMMOLATE              20294
+#define SPELL_TERRIFYINGROAR        14100
 
 struct MANGOS_DLL_DECL boss_thebeastAI : public ScriptedAI
 {
     boss_thebeastAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
-    uint32 m_uiFlamebreakTimer;
-    uint32 m_uiImmolateTimer;
-    uint32 m_uiTerrifyingRoarTimer;
+    uint32 Flamebreak_Timer;
+    uint32 Immolate_Timer;
+    uint32 TerrifyingRoar_Timer;
 
     void Reset()
     {
-        m_uiFlamebreakTimer     = 12000;
-        m_uiImmolateTimer       = 3000;
-        m_uiTerrifyingRoarTimer = 23000;
+        Flamebreak_Timer = 12000;
+        Immolate_Timer = 3000;
+        TerrifyingRoar_Timer = 23000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-        // Return since we have no target
+        //Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
-        // Flamebreak
-        if (m_uiFlamebreakTimer < uiDiff)
+        //Flamebreak_Timer
+        if (Flamebreak_Timer < diff)
         {
-            DoCastSpellIfCan(m_creature, SPELL_FLAMEBREAK);
-            m_uiFlamebreakTimer = 10000;
-        }
-        else
-            m_uiFlamebreakTimer -= uiDiff;
+            DoCastSpellIfCan(m_creature->getVictim(),SPELL_FLAMEBREAK);
+            Flamebreak_Timer = 10000;
+        }else Flamebreak_Timer -= diff;
 
-        // Immolate
-        if (m_uiImmolateTimer < uiDiff)
+        //Immolate_Timer
+        if (Immolate_Timer < diff)
         {
-            if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                DoCastSpellIfCan(pTarget, SPELL_IMMOLATE);
-            
-            m_uiImmolateTimer = 8000;
-        }
-        else
-            m_uiImmolateTimer -= uiDiff;
+            Unit* target = NULL;
+            target = SelectUnit(SELECT_TARGET_RANDOM,0);
+            if (target) DoCastSpellIfCan(target,SPELL_IMMOLATE);
+            Immolate_Timer = 8000;
+        }else Immolate_Timer -= diff;
 
-        // Terrifying Roar
-        if (m_uiTerrifyingRoarTimer < uiDiff)
+        //TerrifyingRoar_Timer
+        if (TerrifyingRoar_Timer < diff)
         {
-            DoCastSpellIfCan(m_creature, SPELL_TERRIFYINGROAR);
-            m_uiTerrifyingRoarTimer = 20000;
-        }
-        else
-            m_uiTerrifyingRoarTimer -= uiDiff;
+            DoCastSpellIfCan(m_creature->getVictim(),SPELL_TERRIFYINGROAR);
+            TerrifyingRoar_Timer = 20000;
+        }else TerrifyingRoar_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
 };
-
 CreatureAI* GetAI_boss_thebeast(Creature* pCreature)
 {
     return new boss_thebeastAI(pCreature);
@@ -91,7 +81,7 @@ CreatureAI* GetAI_boss_thebeast(Creature* pCreature)
 
 void AddSC_boss_thebeast()
 {
-    Script* newscript;
+    Script *newscript;
     newscript = new Script;
     newscript->Name = "boss_the_beast";
     newscript->GetAI = &GetAI_boss_thebeast;

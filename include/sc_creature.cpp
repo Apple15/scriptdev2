@@ -555,3 +555,34 @@ void Scripted_NoMovementAI::AttackStart(Unit* pWho)
         DoStartNoMovement(pWho);
     }
 }
+
+Unit* ScriptedAI::SelectUnit(SelectAggroTarget target, uint32 uiPosition)
+{
+    //ThreatList m_threatlist;
+    ThreatList const& threatlist = m_creature->getThreatManager().getThreatList();
+    ThreatList::const_iterator itr = threatlist.begin();
+    ThreatList::const_reverse_iterator ritr = threatlist.rbegin();
+
+    if (uiPosition >= threatlist.size() || threatlist.empty())
+        return NULL;
+
+    switch (target)
+    {
+        case SELECT_TARGET_RANDOM:
+            advance(itr, uiPosition +  (rand() % (threatlist.size() - uiPosition)));
+            return Unit::GetUnit((*m_creature),(*itr)->getUnitGuid());
+            break;
+
+        case SELECT_TARGET_TOPAGGRO:
+            advance(itr, uiPosition);
+            return Unit::GetUnit((*m_creature),(*itr)->getUnitGuid());
+            break;
+
+        case SELECT_TARGET_BOTTOMAGGRO:
+            advance(ritr, uiPosition);
+            return Unit::GetUnit((*m_creature),(*ritr)->getUnitGuid());
+            break;
+    }
+
+    return NULL;
+}

@@ -17,215 +17,167 @@
 /* ScriptData
 SDName: Boss_Gyth
 SD%Complete: 100
-SDComment: Whole Event needs some rewrite
+SDComment:
 SDCategory: Blackrock Spire
 EndScriptData */
 
 #include "precompiled.h"
-#include "blackrock_spire.h"
 
-enum
-{
-    SPELL_CORROSIVEACID     = 20667,
-    SPELL_FREEZE            = 16350,                        // ID was wrong!
-    SPELL_FLAMEBREATH       = 20712,
-    SPELL_ROOT_SELF         = 33356,
-
-    MODEL_ID_INVISIBLE      = 11686,
-    MODEL_ID_GYTH_MOUNTED   = 9723,
-    MODEL_ID_GYTH           = 9806,
-
-    NPC_FIRE_TONGUE         = 10372,
-    NPC_CHROMATIC_WHELP     = 10442,
-    NPC_CHROMATIC_DRAGON    = 10447,
-    NPC_BLACKHAND_ELITE     = 10317,
-    NPC_REND_BLACKHAND      = 10429
-};
+#define SPELL_CORROSIVEACID      20667
+#define SPELL_FREEZE             18763
+#define SPELL_FLAMEBREATH        20712
 
 struct MANGOS_DLL_DECL boss_gythAI : public ScriptedAI
 {
-    boss_gythAI(Creature* pCreature) : ScriptedAI(pCreature)
-    {
-        m_pInstance = (instance_blackrock_spire*) pCreature->GetInstanceData();
-        Reset();
-    }
+    boss_gythAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
-    instance_blackrock_spire* m_pInstance;
-    uint64 m_uiCombatDoorGUID;
-    uint32 uiAggroTimer;
-    uint32 uiDragonsTimer;
-    uint32 uiOrcTimer;
-    uint32 uiCorrosiveAcidTimer;
-    uint32 uiFreezeTimer;
-    uint32 uiFlamebreathTimer;
-    uint32 uiLine1Count;
-    uint32 uiLine2Count;
+    uint32 Aggro_Timer;
+    uint32 Dragons_Timer;
+    uint32 Orc_Timer;
+    uint32 CorrosiveAcid_Timer;
+    uint32 Freeze_Timer;
+    uint32 Flamebreath_Timer;
+    uint32 Line1Count;
+    uint32 Line2Count;
 
-    bool m_bSummonedRend;
-    bool m_bAggro;
-    bool m_bRootSelf;
+    bool Event;
+    bool SummonedDragons;
+    bool SummonedOrcs;
+    bool SummonedRend;
+    bool bAggro;
+    bool RootSelf;
+    Creature *SummonedCreature;
 
     void Reset()
     {
-        uiDragonsTimer = 3000;
-        uiOrcTimer = 60000;
-        uiAggroTimer = 60000;
-        uiCorrosiveAcidTimer = 8000;
-        uiFreezeTimer = 11000;
-        uiFlamebreathTimer = 4000;
-        m_bSummonedRend = false;
-        m_bAggro = false;
-        m_bRootSelf = false;
+        Dragons_Timer = 3000;
+        Orc_Timer = 60000;
+        Aggro_Timer = 60000;
+        CorrosiveAcid_Timer = 8000;
+        Freeze_Timer = 11000;
+        Flamebreath_Timer = 4000;
+        Event = false;
+        SummonedDragons = false;
+        SummonedOrcs= false;
+        SummonedRend = false;
+        bAggro = false;
+        RootSelf = false;
 
         // how many times should the two lines of summoned creatures be spawned
         // min 2 x 2, max 7 lines of attack in total
-        uiLine1Count = urand(2, 5);
-        uiLine2Count = urand(2, 7 - uiLine1Count);
+        Line1Count = rand() % 4 + 2;
+        if (Line1Count < 5)
+            Line2Count = rand() % (5 - Line1Count) + 2;
+        else
+            Line2Count = 2;
 
-        // Invisible for event start
-        m_creature->SetDisplayId(MODEL_ID_INVISIBLE);
+        //Invisible for event start
+        m_creature->SetDisplayId(11686);
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
     }
 
-    void Aggro(Unit* pWho)
+    void SummonCreatureWithRandomTarget(uint32 creatureId)
     {
-        if (m_pInstance)
+        Unit* Summoned = m_creature->SummonCreature(creatureId, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 240000);
+        if (Summoned)
         {
-            m_pInstance->SetData(TYPE_GYTH, IN_PROGRESS);
-            m_uiCombatDoorGUID = m_pInstance->GetData64(GO_GYTH_COMBAT_DOOR);
+            Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 0);
+            if (target)
+                Summoned->AddThreat(target);
         }
     }
 
-    void JustDied(Unit* pKiller)
+    void UpdateAI(const uint32 diff)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_GYTH, DONE);
-    }
+        //char buf[200];
 
-    void JustReachedHome()
-    {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_GYTH, FAIL);
-    }
-
-    void SummonCreatureWithRandomTarget(uint32 uiCreatureId)
-    {
-        float fX, fY, fZ;
-        m_creature->GetRandomPoint(m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 2*INTERACTION_DISTANCE, fX, fY, fZ);
-        fX = std::min(m_creature->GetPositionX(), fX);      // Halfcircle - suits better the rectangular form
-        if (Creature* pSummoned = m_creature->SummonCreature(uiCreatureId, fX, fY, fZ, 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 240000))
-            if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
-                pSummoned->AI()->AttackStart(pTarget);
-    }
-
-    void UpdateAI(const uint32 uiDiff)
-    {
         //Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
-        if (!m_bRootSelf)
+        if (!RootSelf)
         {
-            DoCastSpellIfCan(m_creature, SPELL_ROOT_SELF);
-            m_bRootSelf = true;
+            //m_creature->m_canMove = true;
+            DoCastSpellIfCan(m_creature, 33356);
+            RootSelf = true;
         }
 
-        if (!m_bAggro && uiLine1Count == 0 && uiLine2Count == 0)
+        if (!bAggro && Line1Count == 0 && Line2Count == 0)
         {
-            if (uiAggroTimer < uiDiff)
+            if (Aggro_Timer < diff)
             {
-                m_bAggro = true;
+                bAggro = true;
                 // Visible now!
-                m_creature->SetDisplayId(MODEL_ID_GYTH_MOUNTED);
+                m_creature->SetDisplayId(9723);
                 m_creature->setFaction(14);
                 m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                m_creature->RemoveAurasDueToSpell(SPELL_ROOT_SELF);
-                if (m_pInstance)
-                    m_pInstance->DoUseDoorOrButton(m_uiCombatDoorGUID);
-
-            }
-            else
-                uiAggroTimer -= uiDiff;
+            } else Aggro_Timer -= diff;
         }
 
         // Summon Dragon pack. 2 Dragons and 3 Whelps
-        if (!m_bAggro && !m_bSummonedRend && uiLine1Count > 0)
+        if (!bAggro && !SummonedRend && Line1Count > 0)
         {
-            if (uiDragonsTimer < uiDiff)
+            if (Dragons_Timer < diff)
             {
-                SummonCreatureWithRandomTarget(NPC_FIRE_TONGUE);
-                SummonCreatureWithRandomTarget(NPC_FIRE_TONGUE);
-                SummonCreatureWithRandomTarget(NPC_CHROMATIC_WHELP);
-                SummonCreatureWithRandomTarget(NPC_CHROMATIC_WHELP);
-                SummonCreatureWithRandomTarget(NPC_CHROMATIC_WHELP);
-                --uiLine1Count;
-                if (m_pInstance)
-                    m_pInstance->DoUseDoorOrButton(m_uiCombatDoorGUID);
-                uiDragonsTimer = 60000;
-            }
-            else
-                uiDragonsTimer -= uiDiff;
+                SummonCreatureWithRandomTarget(10372);
+                SummonCreatureWithRandomTarget(10372);
+                SummonCreatureWithRandomTarget(10442);
+                SummonCreatureWithRandomTarget(10442);
+                SummonCreatureWithRandomTarget(10442);
+                Line1Count = Line1Count - 1;
+                Dragons_Timer = 60000;
+            } else Dragons_Timer -= diff;
         }
 
         //Summon Orc pack. 1 Orc Handler 1 Elite Dragonkin and 3 Whelps
-        if (!m_bAggro && !m_bSummonedRend && uiLine1Count == 0 && uiLine2Count > 0)
+        if (!bAggro && !SummonedRend && Line1Count == 0 && Line2Count > 0)
         {
-            if (uiOrcTimer < uiDiff)
+            if (Orc_Timer < diff)
             {
-                SummonCreatureWithRandomTarget(NPC_CHROMATIC_DRAGON);
-                SummonCreatureWithRandomTarget(NPC_BLACKHAND_ELITE);
-                SummonCreatureWithRandomTarget(NPC_CHROMATIC_WHELP);
-                SummonCreatureWithRandomTarget(NPC_CHROMATIC_WHELP);
-                SummonCreatureWithRandomTarget(NPC_CHROMATIC_WHELP);
-                if (m_pInstance)
-                    m_pInstance->DoUseDoorOrButton(m_uiCombatDoorGUID);
-                --uiLine2Count;
-                uiOrcTimer = 60000;
-            }
-            else
-                uiOrcTimer -= uiDiff;
+                SummonCreatureWithRandomTarget(10447);
+                SummonCreatureWithRandomTarget(10317);
+                SummonCreatureWithRandomTarget(10442);
+                SummonCreatureWithRandomTarget(10442);
+                SummonCreatureWithRandomTarget(10442);
+                Line2Count = Line2Count - 1;
+                Orc_Timer = 60000;
+            } else Orc_Timer -= diff;
         }
 
         // we take part in the fight
-        if (m_bAggro)
+        if (bAggro)
         {
-             // CorrosiveAcid_Timer
-            if (uiCorrosiveAcidTimer < uiDiff)
+            // CorrosiveAcid_Timer
+            if (CorrosiveAcid_Timer < diff)
             {
-                DoCastSpellIfCan(m_creature, SPELL_CORROSIVEACID);
-                uiCorrosiveAcidTimer = 7000;
-            }
-            else
-                uiCorrosiveAcidTimer -= uiDiff;
+                DoCastSpellIfCan(m_creature->getVictim(), SPELL_CORROSIVEACID);
+                CorrosiveAcid_Timer = 7000;
+            } else CorrosiveAcid_Timer -= diff;
 
             // Freeze_Timer
-            if (uiFreezeTimer < uiDiff)
+            if (Freeze_Timer < diff)
             {
-                if (DoCastSpellIfCan(m_creature, SPELL_FREEZE) == CAST_OK)
-                    uiFreezeTimer = 16000;
-            }
-            else
-                uiFreezeTimer -= uiDiff;
+                DoCastSpellIfCan(m_creature->getVictim(), SPELL_FREEZE);
+                Freeze_Timer = 16000;
+            } else Freeze_Timer -= diff;
 
             // Flamebreath_Timer
-            if (uiFlamebreathTimer < uiDiff)
+            if (Flamebreath_Timer < diff)
             {
-                DoCastSpellIfCan(m_creature, SPELL_FLAMEBREATH);
-                uiFlamebreathTimer = 10500;
-            }
-            else
-                uiFlamebreathTimer -= uiDiff;
+                DoCastSpellIfCan(m_creature->getVictim(),SPELL_FLAMEBREATH);
+                Flamebreath_Timer = 10500;
+            } else Flamebreath_Timer -= diff;
 
             //Summon Rend
-            if (!m_bSummonedRend && m_creature->GetHealthPercent() < 11.0f)
+            if (!SummonedRend && m_creature->GetHealthPercent() < 11.0f && m_creature->GetHealth() > 0)
             {
-                // summon Rend and Change model to normal Gyth
-                // Inturrupt any spell casting
+                //summon Rend and Change model to normal Gyth
+                //Inturrupt any spell casting
                 m_creature->InterruptNonMeleeSpells(false);
-                // Gyth model
-                m_creature->SetDisplayId(MODEL_ID_GYTH);
-                m_creature->SummonCreature(NPC_REND_BLACKHAND, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 900000);
-                m_bSummonedRend = true;
+                //Gyth model
+                m_creature->SetDisplayId(9806);
+                m_creature->SummonCreature(10429, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 900000);
+                SummonedRend = true;
             }
 
             DoMeleeAttackIfReady();
@@ -240,9 +192,9 @@ CreatureAI* GetAI_boss_gyth(Creature* pCreature)
 
 void AddSC_boss_gyth()
 {
-    Script* pNewScript;
-    pNewScript = new Script;
-    pNewScript->Name = "boss_gyth";
-    pNewScript->GetAI = &GetAI_boss_gyth;
-    pNewScript->RegisterSelf();
+    Script *newscript;
+    newscript = new Script;
+    newscript->Name = "boss_gyth";
+    newscript->GetAI = &GetAI_boss_gyth;
+    newscript->RegisterSelf();
 }

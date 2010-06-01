@@ -282,10 +282,6 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
             {
                 if (m_creature->GetHealthPercent() < 65.0f)
                 {
-                    // make boss fly
-                    m_creature->SetUInt32Value(UNIT_FIELD_BYTES_0, 50331648);
-                    m_creature->SetUInt32Value(UNIT_FIELD_BYTES_1, 50331648);
-
                     m_uiPhase = PHASE_BREATH;
 
                     SetCombatMovement(false);
@@ -309,10 +305,6 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
         {
             if (m_creature->GetHealthPercent() < 40.0f)
             {
-                // make boss land
-                m_creature->SetUInt32Value(UNIT_FIELD_BYTES_0, 0);
-                m_creature->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
-
                 m_uiPhase = PHASE_END;
                 DoScriptText(SAY_PHASE_3_TRANS, m_creature);
 
@@ -353,7 +345,7 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
             {
                 if (m_creature->GetMotionMaster()->GetCurrentMovementGeneratorType() != POINT_MOTION_TYPE)
                 {
-                    if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+                    if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                         DoCastSpellIfCan(pTarget, Regular ? SPELL_FIREBALL : H_SPELL_FIREBALL);
 
                     m_uiEngulfingFlamesTimer = 8000;

@@ -118,12 +118,8 @@ struct MANGOS_DLL_DECL boss_faction_championsAI : public ScriptedAI
 
     void Aggro(Unit *who)
     {
-        if(!m_pInstance) return;
-        m_pInstance->SetData(TYPE_CRUSADERS, IN_PROGRESS);
         DoCast(m_creature, SPELL_ANTI_AOE, true);
-        if(who->GetTypeId() != TYPEID_PLAYER)
-            if(Unit* player = bsw->SelectRandomPlayerAtRange(80.0f))
-                m_creature->AddThreat(player, 100.0f);
+        if(m_pInstance) m_pInstance->SetData(TYPE_CRUSADERS, IN_PROGRESS);
     }
 
     void Reset()
@@ -409,7 +405,7 @@ struct MANGOS_DLL_DECL mob_toc_priestAI : public boss_faction_championsAI
                     bsw->doCast(SPELL_FLASH_HEAL);
                     break;
                 case 4:
-                    if(Unit *target = urand(0,1) ? m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0) : DoSelectLowestHpFriendly(40.0f))
+                    if(Unit *target = urand(0,1) ? SelectUnit(SELECT_TARGET_RANDOM,0) : DoSelectLowestHpFriendly(40.0f))
                         bsw->doCast(target, SPELL_DISPEL);
                     break;
                 case 5:
@@ -565,7 +561,7 @@ struct MANGOS_DLL_DECL mob_toc_mageAI : public boss_faction_championsAI
         if(Unit *target = SelectEnemyCaster(false))
             bsw->timedCast(SPELL_Counterspell, diff, target);
 
-        if(m_creature->GetHealthPercent() < 50.0f && EnemiesInRange(10.0f) > 3)
+        if(m_creature->GetHealthPercent() < 50.0f && EnemiesInRange(10.0f)>3)
         {
             bsw->timedCast(SPELL_Frost_Nova, diff);
             bsw->timedCast(SPELL_Blink, diff);
@@ -809,7 +805,7 @@ struct MANGOS_DLL_DECL mob_toc_rogueAI : public boss_faction_championsAI
         if(m_creature->IsInRange(m_creature->getVictim(), 10.0f, 40.0f))
             bsw->timedCast(SPELL_SHADOWSTEP, diff);
 
-        if(Unit* target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 1))
+        if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,1))
             if(m_creature->IsInRange(target, 0.0f, 15.0f, false))
                 bsw->timedCast(SPELL_BLIND, diff, target);
 

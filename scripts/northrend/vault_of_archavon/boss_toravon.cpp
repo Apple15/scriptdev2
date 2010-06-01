@@ -34,7 +34,6 @@ struct MANGOS_DLL_DECL boss_toravonAI : public ScriptedAI
 
     bool m_bIsRegularMode;
     ScriptedInstance *pInstance;
-    uint32 m_uiEvadeCheckCooldown;
 
     int orbsNum;
     uint32 WhiteoutTimer;
@@ -43,7 +42,6 @@ struct MANGOS_DLL_DECL boss_toravonAI : public ScriptedAI
 
     void Reset()
     {
-        m_uiEvadeCheckCooldown = 2000;
         WhiteoutTimer = 40000;
         OrbsTimer = 15000;
         FreezeTimer = 20000 + rand()%5000;
@@ -72,47 +70,38 @@ struct MANGOS_DLL_DECL boss_toravonAI : public ScriptedAI
         orb->SetInCombatWithZone();
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
-        if (m_uiEvadeCheckCooldown < uiDiff)
-        {
-            if (m_creature->GetDistance2d(-43.68f, -289.02f) > 80.0f)
-                EnterEvadeMode();
-            m_uiEvadeCheckCooldown = 2000;
-        }
-        else
-            m_uiEvadeCheckCooldown -= uiDiff;
-
-        if(WhiteoutTimer < uiDiff)
+        if(WhiteoutTimer < diff)
         {
             DoCastSpellIfCan(m_creature, m_bIsRegularMode ? SP_WHITEOUT : H_SP_WHITEOUT);
             WhiteoutTimer = 40000;
         }
         else
-            WhiteoutTimer -= uiDiff;
+            WhiteoutTimer -= diff;
 
-        if(OrbsTimer < uiDiff)
+        if(OrbsTimer < diff)
         {
             for(int i=0; i<orbsNum; ++i)
             {
-                if(Unit *target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+                if(Unit *target = SelectUnit(SELECT_TARGET_RANDOM, 0))
                     m_creature->SummonCreature(CR_FROZEN_ORB, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 3000);
             }
             OrbsTimer = 40000;
         }
         else
-            OrbsTimer -= uiDiff;
+            OrbsTimer -= diff;
 
-        if(FreezeTimer < uiDiff)
+        if(FreezeTimer < diff)
         {
             DoCastSpellIfCan(m_creature, SP_FREEZING_GROUND);
             FreezeTimer = 20000 + rand()%5000;
         }
         else
-            FreezeTimer -= uiDiff;
+            FreezeTimer -= diff;
 
         DoMeleeAttackIfReady();
     }

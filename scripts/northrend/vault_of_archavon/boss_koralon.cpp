@@ -29,8 +29,6 @@ struct MANGOS_DLL_DECL boss_koralonAI : public ScriptedAI
 
     ScriptedInstance* pInstance;
     bool Regular;
-    uint32 m_uiEvadeCheckCooldown;
-
     uint32 BurningBreathTimer;
     uint32 MeteorFistsTimer;
     uint32 FlamesTimer;
@@ -41,7 +39,6 @@ struct MANGOS_DLL_DECL boss_koralonAI : public ScriptedAI
 
     void Reset()
     {
-        m_uiEvadeCheckCooldown = 2000;
         BurningBreathTimer = 25000;
         MeteorFistsTimer = 47000;
         FlamesTimer = 15000;
@@ -63,21 +60,12 @@ struct MANGOS_DLL_DECL boss_koralonAI : public ScriptedAI
         if(pInstance) pInstance->SetData(TYPE_KORALON, DONE);
     };
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
-        if (m_uiEvadeCheckCooldown < uiDiff)
-        {
-            if (m_creature->GetDistance2d(-218.57f, 103.86f) > 80.0f)
-                EnterEvadeMode();
-            m_uiEvadeCheckCooldown = 2000;
-        }
-        else
-            m_uiEvadeCheckCooldown -= uiDiff;
-
-        if(BurningBreathTimer < uiDiff)
+        if(BurningBreathTimer < diff)
         {
             DoCastSpellIfCan(m_creature, Regular ? SP_BURNING_BREATH : H_SP_BURNING_BREATH);
             BurningBreathTimer = 45000;
@@ -86,39 +74,39 @@ struct MANGOS_DLL_DECL boss_koralonAI : public ScriptedAI
             BBTickTimer = 1000;
             BBTicks = 0;
         }
-        else BurningBreathTimer -= uiDiff;
+        else BurningBreathTimer -= diff;
 
         if(BB)
         {
-            if(BBTickTimer < uiDiff)
+            if(BBTickTimer < diff)
             {
                 DoCastSpellIfCan(NULL, Regular ? SP_BB_EFFECT : H_SP_BB_EFFECT, true);
                 BBTickTimer = 1000;
                 ++BBTicks;
                 if(BBTicks > 2) BB = false;
             }
-            else BBTickTimer -= uiDiff;
+            else BBTickTimer -= diff;
         }
 
-        if(FlamesTimer < uiDiff)
+        if(FlamesTimer < diff)
         {
             int flames = Regular ? 3 : 5;
             int i;
             for(i=0; i< flames; ++i)
             {
-                Unit *target = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0);
+                Unit *target = SelectUnit(SELECT_TARGET_RANDOM, 0);
                 if(target) DoCastSpellIfCan(target, Regular ? SP_CINDER : H_SP_CINDER);
             }
             FlamesTimer = 20000;
         }
-        else FlamesTimer -= uiDiff;
+        else FlamesTimer -= diff;
 
-        if(MeteorFistsTimer < uiDiff)
+        if(MeteorFistsTimer < diff)
         {
             DoCastSpellIfCan(m_creature->getVictim(), SP_METEOR_FISTS_EFF);
             MeteorFistsTimer = 45000;
         }
-        else MeteorFistsTimer -= uiDiff;
+        else MeteorFistsTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
