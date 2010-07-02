@@ -15,259 +15,226 @@
  */
 
 /* ScriptData
-SDName: Bronjahm
-SD%Complete: 0
-SDComment: PH.
-SDCategory: The Forge of Souls
+SDName: boss_bronjahm
+SD%Complete: 10%
+SDComment: by /dev/rsa
+SDCategory: Icecrown - forge of souls
 EndScriptData */
+
 #include "precompiled.h"
-#include "the_forge_of_souls.h"
+#include "def_forge.h"
 
-#define SAY_1						"Finally! A Captive Audience"
-#define SOUND_1						16595
-#define SAY_BRONJAHM_CORRUPT_SOUL	"I will sever your soul from your body"
-#define SOUND_BRONJAHM_CORRUPT_SOUL 16600
-#define SAY_BRONJAHM_SOULSTORM		"The vortex of the hovested calls for you!"
-#define SOUND_BRONJAHM_SOULSTORM	16599
-#define SAY_KILL1					"Another Soul to straight in the houst!"
-#define SOUND_KILL1					16597
-#define SAY_BRONJAHM_DEATH			"My soul for you. master"
-#define SOUND_BRONJAHM_DEATH		16598
+enum BossSpells
+{
+        //common
+        SPELL_BERSERK                           = 47008,
+        //yells
+        //summons
+        NPC_SOUL_FRAGMENT                       = 36535,
+        //Abilities
+        SPELL_MAGIC_BANE                        = 68793,
+        SPELL_CORRUPT_SOUL                      = 68839,
+        SPELL_CONSUME_SOUL                      = 68858,
+        SPELL_TELEPORT                          = 68988,
+        SPELL_SOULSTORM                         = 68872,
+        SPELL_SOULSTORM_2                       = 68921,
+        SPELL_FEAR                              = 68950,
+        SPELL_SHADOW_BOLT                       = 70043,
 
-//define spells
-#define SPELL_MAGIC_BANE	69050
-#define SPELL_SHADOW_BOLT	70043
-#define SPELL_CORRUPT_SOUL	68839
-#define SPELL_CONSUME_SOUL	69047
-#define SPELL_TELEPORT		68988
-#define SPELL_SOULSTORM_x   68872
-#define SPELL_SOULSTORM_1	68886
-#define SPELL_SOULSTORM_2	68896
-#define SPELL_SOULSTORM_3	68897
-#define SPELL_SOULSTORM_4	68898
-#define SPELL_SOULSTORM_5   68904
-#define SPELL_SOULSTORM_6   68905
-#define SPELL_SOULSTORM_7   68906
-#define	SPELL_FEAR			68950	//with soulstorm v
+   /*Music*/
+   Battle01                              = 6077,
+   Battle02                              = 6078,
+   Battle03                              = 6079,
+
+};
 
 struct MANGOS_DLL_DECL boss_bronjahmAI : public ScriptedAI
 {
-    boss_bronjahmAI(Creature *c) : ScriptedAI(c)
+    boss_bronjahmAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
-        m_bIsRegularMode = c->GetMap()->IsRegularDifficulty();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        bsw = new BossSpellWorker(this);
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-	bool m_bIsRegularMode;
+    ScriptedInstance *pInstance;
+    BossSpellWorker* bsw;
+    uint8 stage;
+    uint32 BattleMusicTimer;
+    uint32 Music;
 
-    uint32 Phase;
-	uint32 Magic_Bane_Timer;
-	uint32 Shadow_Bolt_Timer;
-    uint32 Corrupt_Soul_Timer;
-    uint32 Consume_Soul_Timer;
-   	uint32 TELEPORT_Timer;
-   	uint32 SOULSTORM_1_Timer;
-	uint32 SOULSTORM_2_Timer;
-	uint32 SOULSTORM_3_Timer;
-	uint32 SOULSTORM_4_Timer;
-	uint32 SOULSTORM_5_Timer;
-	uint32 SOULSTORM_6_Timer;
-	uint32 SOULSTORM_7_Timer;
-	uint32 SOULSTORM_x_Timer;
-   	uint32 FEAR_Timer;	
-	bool InitialSpawn;
-	bool Enraged;
-
-	void Reset()
+    void Reset()
     {
-        Phase = 1;
-
-        Magic_Bane_Timer = 8000;
-		Shadow_Bolt_Timer = urand(2000,5000);
-        Corrupt_Soul_Timer = urand(10000,14000);
-        Consume_Soul_Timer = 15000;
-        TELEPORT_Timer = 1500;
-        SOULSTORM_x_Timer = 1000;
-        SOULSTORM_1_Timer = 1000;
-		SOULSTORM_2_Timer = 1250;
-		SOULSTORM_3_Timer = 1500;
-		SOULSTORM_4_Timer = 1750;
-		SOULSTORM_5_Timer = 2000;
-		SOULSTORM_6_Timer = 2250;
-		SOULSTORM_7_Timer = 2500;
-        FEAR_Timer = urand (4000, 5000);
-		
-		Enraged = false;
-		
-        InitialSpawn = true;
+        if(pInstance) pInstance->SetData(TYPE_BRONJAHM, NOT_STARTED);
+        bsw->resetTimers();
+        stage = 0;
     }
 
-	 void Aggro(Unit *who)
+    void Aggro(Unit *who) 
     {
-        if (pInstance)	
-			DoPlaySoundToSet(m_creature, SOUND_1);
-            m_creature->MonsterYell(SAY_1, LANG_UNIVERSAL,NULL);
+       Music = (urand(0, 2));
+       switch(Music)
+       {
+         case 0:
+            m_creature->PlayDirectSound(Battle01);
+            BattleMusicTimer = 48000;
+            break;
+         case 1:
+            m_creature->PlayDirectSound(Battle02);
+            BattleMusicTimer = 27000;
+            break;
+         case 2:
+            m_creature->PlayDirectSound(Battle03);
+            BattleMusicTimer = 36000;
+            break; 
+        }
+
+        if(pInstance) pInstance->SetData(TYPE_BRONJAHM, IN_PROGRESS);
+            DoScriptText(-1632001,m_creature,who);
+            SetCombatMovement(true);
     }
 
-	 void KilledUnit(Unit *victim)
+    void JustDied(Unit *killer)
     {
-		DoPlaySoundToSet(m_creature, SOUND_KILL1);
-        m_creature->MonsterYell(SAY_KILL1, LANG_UNIVERSAL,NULL);        
+        if(pInstance) pInstance->SetData(TYPE_BRONJAHM, DONE);
+        bsw->doRemove(SPELL_SOULSTORM);
+               DoScriptText(-1632004,m_creature,killer);
     }
 
-	 void JustDied(Unit *victim)
+    void KilledUnit(Unit* pVictim)
     {
-		DoPlaySoundToSet(m_creature,SOUND_BRONJAHM_DEATH);
-		m_creature->MonsterYell(SAY_BRONJAHM_DEATH, LANG_UNIVERSAL,NULL);
-	 }
+    switch (urand(0,1)) {
+        case 0:
+               DoScriptText(-1632002,m_creature,pVictim);
+               break;
+        case 1:
+               DoScriptText(-1632003,m_creature,pVictim);
+               break;
+        };
+    }
 
-	void UpdateAI(const uint32 diff)
+    void UpdateAI(const uint32 diff)
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
-		if (((m_creature->GetHealth()*100 / m_creature->GetMaxHealth()) < 100) && (Phase == 1))
-		{
-			Phase = 2;
-		}
-		if (((m_creature->GetHealth()*100 / m_creature->GetMaxHealth()) < 75) && (Phase == 2))
-		{
-			Phase = 3;
-		}
-		if (((m_creature->GetHealth()*100 / m_creature->GetMaxHealth()) < 50) && (Phase == 3))
-		{
-			Phase = 4;
-		}
-		if (((m_creature->GetHealth()*100 / m_creature->GetMaxHealth()) < 40) && (Phase == 4))
-		{
-			Phase = 5;
-			DoPlaySoundToSet(m_creature,SOUND_BRONJAHM_SOULSTORM);
-            m_creature->MonsterYell(SAY_BRONJAHM_SOULSTORM, LANG_UNIVERSAL,NULL);
-		}	
-		if (((m_creature->GetHealth()*100 / m_creature->GetMaxHealth()) < 29) && (Phase == 5))
-		{
-			Phase = 6;
-		}
-
-		if (Phase == 2)
-		{
-			if (Shadow_Bolt_Timer < diff)
-            {
-                DoCast(m_creature->getVictim(),SPELL_SHADOW_BOLT);
-                Shadow_Bolt_Timer = urand(2000,5000);
-            } else Shadow_Bolt_Timer -=diff;
-               
-			if (Magic_Bane_Timer < diff)
-            {
-                DoCast(m_creature->getVictim(),SPELL_MAGIC_BANE);
-                Magic_Bane_Timer = urand(8000,10000);
-            } else Magic_Bane_Timer -= diff;
-
-            if (Corrupt_Soul_Timer < diff)
-            {
-				DoPlaySoundToSet(m_creature,SOUND_BRONJAHM_CORRUPT_SOUL);
-				m_creature->MonsterYell(SAY_BRONJAHM_CORRUPT_SOUL, LANG_UNIVERSAL,NULL);
-                DoCast(m_creature->getVictim(),SPELL_CORRUPT_SOUL);
-                Corrupt_Soul_Timer = urand(12000,14000);
-            } else Corrupt_Soul_Timer -=diff;
-			 
+        switch(stage)
+        {
+            case 0: 
+                    if  (bsw->timedQuery(SPELL_CORRUPT_SOUL, diff))
+                        {
+                            if (Unit* pTarget= m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+                                {
+                                if (bsw->doCast(SPELL_CORRUPT_SOUL, pTarget) == CAST_OK)
+                                    {
+                                    DoScriptText(-1632006,m_creature,pTarget);
+                                    float fPosX, fPosY, fPosZ;
+                                    pTarget->GetPosition(fPosX, fPosY, fPosZ);
+                                    bsw->doSummon(NPC_SOUL_FRAGMENT,fPosX, fPosY, fPosZ);
+                                    }
+                                }
+                        }
+                    break;
+            case 1: 
+                        if (bsw->timedCast(SPELL_TELEPORT, diff) == CAST_OK) stage = 2;
+                    break;
+            case 2:
+                        if (bsw->timedCast(SPELL_SOULSTORM, diff) == CAST_OK) {
+                               DoScriptText(-1632005,m_creature);
+                               SetCombatMovement(false);
+                               stage = 3;
+                               }
+                    break;
+            case 3: 
+                        bsw->timedCast(SPELL_FEAR, diff);
+                    break;
         }
 
-		/*if (Phase == 3)
-		{
-			if (TELEPORT_Timer < diff)
+        bsw->timedCast(SPELL_SHADOW_BOLT, diff);
+
+        bsw->timedCast(SPELL_MAGIC_BANE, diff);
+
+        if (m_creature->GetHealthPercent() <= 30.0f && stage == 0) stage = 1;
+
+        DoMeleeAttackIfReady();
+
+        if (BattleMusicTimer < diff && m_creature->isAlive())
+        {
+           switch(Music)
+           {
+             case 0:
+                m_creature->PlayDirectSound(Battle01);
+                BattleMusicTimer = 49000;
+                break;
+             case 1:
+                m_creature->PlayDirectSound(Battle02);
+                BattleMusicTimer = 28000;
+                break;
+             case 2:
+                m_creature->PlayDirectSound(Battle03);
+                BattleMusicTimer = 37000;
+                break; 
+            }
+        } else BattleMusicTimer -= diff;
+    }
+};
+
+struct MANGOS_DLL_DECL mob_soul_fragmentAI : public ScriptedAI
+{
+    mob_soul_fragmentAI(Creature *pCreature) : ScriptedAI(pCreature)
+    {
+        m_pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+        Reset();
+    }
+
+    ScriptedInstance *m_pInstance;
+    Creature* pBoss;
+    uint32 m_uiRangeCheck_Timer;
+
+    void Reset()
+    {
+        m_uiRangeCheck_Timer = 1000;
+        if (!m_pInstance) return;
+        pBoss = (Creature*)Unit::GetUnit((*m_creature), m_pInstance->GetData64(NPC_BRONJAHM));
+        m_creature->SetSpeedRate(MOVE_RUN, 0.2f);
+        m_creature->GetMotionMaster()->MoveChase(pBoss);
+        m_creature->SetRespawnDelay(DAY);
+    }
+
+    void AttackStart(Unit* pWho)
+    {
+        return;
+    }
+
+    void UpdateAI(const uint32 uiDiff)
+    {
+        if (!m_pInstance || m_pInstance->GetData(TYPE_BRONJAHM) != IN_PROGRESS ) m_creature->ForcedDespawn();
+
+        if (m_uiRangeCheck_Timer < uiDiff)
+        {
+            if (pBoss->IsWithinDistInMap(m_creature, 2.0f))
             {
-                DoCast(m_creature->getVictim(),SPELL_TELEPORT);
-                TELEPORT_Timer = 2500;				   
-            } else TELEPORT_Timer -=diff;
-		}*/
-		
-		if (Phase == 4)
-		{	
-				
-			if (SOULSTORM_1_Timer < diff)
-            {
-                DoCast(m_creature->getVictim(),SPELL_SOULSTORM_1);
-                SOULSTORM_1_Timer = 1000;				   
-            } else SOULSTORM_1_Timer -=diff;
-				
-			if (SOULSTORM_2_Timer < diff)
-            {
-                DoCast(m_creature->getVictim(),SPELL_SOULSTORM_2);
-                SOULSTORM_2_Timer = 1250;				   
-            } else SOULSTORM_2_Timer -=diff;
-				
-			if (SOULSTORM_3_Timer < diff)
-            {
-                DoCast(m_creature->getVictim(),SPELL_SOULSTORM_3);
-                SOULSTORM_3_Timer = 1500;				   
-            } else SOULSTORM_3_Timer -=diff;
-				
-			if (SOULSTORM_4_Timer < diff)
-            {
-                DoCast(m_creature->getVictim(),SPELL_SOULSTORM_4);
-                SOULSTORM_4_Timer = 17500;				   
-            } else SOULSTORM_4_Timer -=diff;
-				
-			if (SOULSTORM_5_Timer < diff)
-            {
-                DoCast(m_creature->getVictim(),SPELL_SOULSTORM_5);
-                SOULSTORM_5_Timer = 2000;				   
-            } else SOULSTORM_5_Timer -=diff;
-				
-			if (SOULSTORM_6_Timer < diff)
-            {
-                DoCast(m_creature->getVictim(),SPELL_SOULSTORM_6);
-                SOULSTORM_6_Timer = 2250;				   
-            } else SOULSTORM_6_Timer -=diff;
-				
-			if (SOULSTORM_7_Timer < diff)
-            {
-                DoCast(m_creature->getVictim(),SPELL_SOULSTORM_7);
-                SOULSTORM_7_Timer = 2500;				   
-            } else SOULSTORM_7_Timer -=diff;
-				
-			if (SOULSTORM_x_Timer < diff)
-            {
-                DoCast(m_creature->getVictim(),SPELL_SOULSTORM_x);
-                SOULSTORM_x_Timer = 3000;				   
-            } else SOULSTORM_x_Timer -=diff;
-			
+                pBoss->CastSpell(pBoss, SPELL_CONSUME_SOUL, false);
+                m_creature->ForcedDespawn();
+            } else m_creature->GetMotionMaster()->MoveChase(pBoss);
+
+            m_uiRangeCheck_Timer = 1000;
         }
+        else m_uiRangeCheck_Timer -= uiDiff;
+    }
 
-			if (Phase == 5)
-			{
-				if (SOULSTORM_x_Timer < diff)
-                {
-                    DoCast(m_creature->getVictim(),SPELL_SOULSTORM_x);
-                   SOULSTORM_x_Timer = 1000;				   
-                } else SOULSTORM_x_Timer -=diff;
-			}
-
-			if (Phase == 6)
-			{
-				if (Shadow_Bolt_Timer < diff)
-                {
-                    DoCast(m_creature->getVictim(),SPELL_SHADOW_BOLT);
-                   Shadow_Bolt_Timer = urand(2000,5000);
-                } else Shadow_Bolt_Timer -=diff;
-
-				if (FEAR_Timer < diff)
-				{
-                   DoCast(m_creature->getVictim(),SPELL_FEAR);
-                   FEAR_Timer = urand (4000, 5000);
-                } else FEAR_Timer -= diff;
-			}
-			DoMeleeAttackIfReady();
-	}
 };
 
 CreatureAI* GetAI_boss_bronjahm(Creature* pCreature)
 {
     return new boss_bronjahmAI(pCreature);
 }
+
+CreatureAI* GetAI_mob_soul_fragment(Creature* pCreature)
+{
+    return new mob_soul_fragmentAI (pCreature);
+}
+
 
 void AddSC_boss_bronjahm()
 {
@@ -277,5 +244,9 @@ void AddSC_boss_bronjahm()
     newscript->GetAI = &GetAI_boss_bronjahm;
     newscript->RegisterSelf();
 
+    newscript = new Script;
+    newscript->Name = "mob_soul_fragment";
+    newscript->GetAI = &GetAI_mob_soul_fragment;
+    newscript->RegisterSelf();
+
 }
-/*UPDATE `creature_template` SET `ScriptName` = 'boss_bronjahm' WHERE `entry` =36497 LIMIT 1 ;*/

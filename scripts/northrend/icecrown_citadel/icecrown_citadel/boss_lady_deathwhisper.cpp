@@ -49,6 +49,11 @@ enum
 
         SPELL_VENGEFUL_BLAST_N                  = 72011,
         SPELL_VENGEFUL_BLAST_H                  = 72012,
+
+		/*Music*/
+		Battle01                              = 6077,
+		Battle02                              = 6078,
+		Battle03                              = 6079,
 };
 
 // Lady Deathwhisper
@@ -194,13 +199,16 @@ struct MANGOS_DLL_DECL boss_lady_deathwhisperAI : public ScriptedAI
 	bool isManaBarrier;
 	bool m_bIsIntroNow;
 
+	uint32 BattleMusicTimer;
+    uint32 Music;
+
     void Reset()
     {
         Shadow_Bolt_Timer = 5000;
         Death_and_Decay_Timer = urand(15000,17000);
 		m_uiEmpower_Timer = 20000;
-        Summon_left_Timer = 5000;
-        Summon_right_Timer = 60000;
+        Summon_left_Timer = 2500;
+        Summon_right_Timer = 30000;
         Frostbolt_Volley_Timer = 2000;
 		Frostbolt_Timer = urand(16000, 28000);
         Summon_Spirit_Timer = 10000;
@@ -255,6 +263,23 @@ struct MANGOS_DLL_DECL boss_lady_deathwhisperAI : public ScriptedAI
         m_creature->SetInCombatWithZone();
 		isManaBarrier = true;
 
+	   Music = (urand(0, 2));
+       switch(Music)
+       {
+         case 0:
+            m_creature->PlayDirectSound(Battle01);
+            BattleMusicTimer = 48000;
+            break;
+         case 1:
+            m_creature->PlayDirectSound(Battle02);
+            BattleMusicTimer = 27000;
+            break;
+         case 2:
+            m_creature->PlayDirectSound(Battle03);
+            BattleMusicTimer = 36000;
+            break; 
+        }
+
         if (m_pInstance)
             m_pInstance->SetData(TYPE_DEATHWHISPER, IN_PROGRESS);
     }
@@ -271,7 +296,7 @@ struct MANGOS_DLL_DECL boss_lady_deathwhisperAI : public ScriptedAI
             return;
          if (isManaBarrier) 
 		 {
-            m_creature->SetPower(POWER_MANA,m_creature->GetPower(POWER_MANA)-uiDamage*4);
+            m_creature->SetPower(POWER_MANA,m_creature->GetPower(POWER_MANA)-uiDamage*1);
             uiDamage = 0;
             if(m_creature->GetHealth() <= m_creature->GetMaxHealth()) 
 			{
@@ -397,7 +422,7 @@ struct MANGOS_DLL_DECL boss_lady_deathwhisperAI : public ScriptedAI
                     pSummonedleft->AddThreat(pTarget);
             }
 
-             Summon_left_Timer = 120000;
+             Summon_left_Timer = 60000;
         }
         else
              Summon_left_Timer -= diff;
@@ -415,7 +440,7 @@ struct MANGOS_DLL_DECL boss_lady_deathwhisperAI : public ScriptedAI
                     pSummonedright->AddThreat(pTarget);
             }
 
-             Summon_right_Timer = 120000;
+             Summon_right_Timer = 60000;
         }
         else
              Summon_right_Timer -= diff;
@@ -521,6 +546,25 @@ struct MANGOS_DLL_DECL boss_lady_deathwhisperAI : public ScriptedAI
 		
 			DoMeleeAttackIfReady();
 		}
+
+		if (BattleMusicTimer < diff && m_creature->isAlive())
+        {
+           switch(Music)
+           {
+             case 0:
+                m_creature->PlayDirectSound(Battle01);
+                BattleMusicTimer = 49000;
+                break;
+             case 1:
+                m_creature->PlayDirectSound(Battle02);
+                BattleMusicTimer = 28000;
+                break;
+             case 2:
+                m_creature->PlayDirectSound(Battle03);
+                BattleMusicTimer = 37000;
+                break; 
+            }
+        } else BattleMusicTimer -= diff;
     }
 
 };

@@ -2215,6 +2215,38 @@
 					Name="violet_hold"
 					>
 					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_cyanigosa.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_erekem.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_ichoron.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_lavanthor.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_moragg.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_xevozz.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\boss_zuramat.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\northrend\violet_hold\def_violet_hold.h"
+						>
+					</File>
+					<File
 						RelativePath="..\scripts\northrend\violet_hold\instance_violet_hold.cpp"
 						>
 					</File>
@@ -2282,6 +2314,14 @@
 							>
 						</File>
 						<File
+							RelativePath="..\scripts\northrend\icecrown_citadel\icecrown_citadel\icecrown_spire.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\icecrown_citadel\icecrown_citadel\icecrown_teleport.cpp"
+							>
+						</File>
+						<File
 							RelativePath="..\scripts\northrend\icecrown_citadel\icecrown_citadel\instance_icecrown_spire.cpp"
 							>
 						</File>
@@ -2305,7 +2345,15 @@
 								>
 							</File>
 							<File
-								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\pit_of_saron\boss_scourgelord_tyrannus.cpp"
+								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\pit_of_saron\boss_scourgelord_tirannus.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\pit_of_saron\def_pit.h"
+								>
+							</File>
+							<File
+								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\pit_of_saron\instance_pit_of_saron.cpp"
 								>
 							</File>
 						</Filter>
@@ -2313,7 +2361,7 @@
 							Name="halls_of_reflection"
 							>
 							<File
-								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\halls_of_reflection\boss_falryn.cpp"
+								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\halls_of_reflection\boss_falric.cpp"
 								>
 							</File>
 							<File
@@ -2322,6 +2370,18 @@
 							</File>
 							<File
 								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\halls_of_reflection\boss_marwyn.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\halls_of_reflection\def_halls.h"
+								>
+							</File>
+							<File
+								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\halls_of_reflection\halls_of_reflection.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\halls_of_reflection\instance_halls_of_reflection.cpp"
 								>
 							</File>
 						</Filter>
@@ -2337,11 +2397,19 @@
 								>
 							</File>
 							<File
-								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\forge_of_souls\the_forge_of_souls.cpp"
+								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\forge_of_souls\def_forge.h"
 								>
 							</File>
 							<File
-								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\forge_of_souls\the_forge_of_souls.h"
+								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\forge_of_souls\forge_of_souls.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\forge_of_souls\instance_forge_of_souls.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\scripts\northrend\icecrown_citadel\frozen_halls\forge_of_souls\trash_forge_of_souls.cpp"
 								>
 							</File>
 						</Filter>

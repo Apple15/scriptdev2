@@ -12,6 +12,7 @@
 extern DatabaseType SD2Database;
 extern Config SD2Config;
 extern std::string CopperToGold(uint32 copper);
+int DEBUG_TELE = 0; //Set to 1 to see debugger messages in error logs
 
 void ProcessTeleport_TeleportMaster(Player *player, Creature *Creature, uint32 action){
 	QueryResult* pResult = SD2Database.PQuery("SELECT ID,Cost,MapID,Xpos,Ypos,Zpos,Rpos,Name FROM teleportmaster_locations ORDER BY id");
@@ -41,7 +42,7 @@ void ProcessTeleport_TeleportMaster(Player *player, Creature *Creature, uint32 a
 }
 
 void ProcessMenu_TeleportMaster(Player *player, Creature *Creature, uint32 action, uint32 MoreLess, uint32 GroupID){
-	error_log("TeleportMaster: Running ProcessMenu - Action: \"%i\" MoreLess: \"%i\" GroupID: \"%i\"",action,MoreLess,GroupID);
+	if(DEBUG_TELE) error_log("TeleportMaster: Running ProcessMenu - Action: \"%i\" MoreLess: \"%i\" GroupID: \"%i\"",action,MoreLess,GroupID);
 	
 	//Initialize
 	int32 ItemCount = 0;
@@ -98,12 +99,12 @@ void ProcessMenu_TeleportMaster(Player *player, Creature *Creature, uint32 actio
 	
 	// Make sure the result is valid, add menu items
 	if(pResult){
-		error_log("TeleportMaster: ProcessMenu queried the DB and got results, processing results...");
+		if(DEBUG_TELE) error_log("TeleportMaster: ProcessMenu queried the DB and got results, processing results...");
 		do{
 			Field* pFields = pResult->Fetch();
 			if(ItemCount==10){
 				//Count is 10! We need a 'more' button!
-				error_log("TeleportMaster: 10 Items on menu, adding 'more' button: \"%i\"", pFields[0].GetInt32() + 200000);
+				if(DEBUG_TELE) error_log("TeleportMaster: 10 Items on menu, adding 'more' button: \"%i\"", pFields[0].GetInt32() + 200000);
 				player->ADD_GOSSIP_ITEM( 4, "More ->", GOSSIP_SENDER_MAIN,  pFields[0].GetInt32() + 200000);
 				ItemCount++;
 			}
@@ -148,12 +149,12 @@ void ProcessMenu_TeleportMaster(Player *player, Creature *Creature, uint32 actio
 	if( GroupID>0 && !locations && ItemCount<10 ){
 		pResult = SD2Database.PQuery("SELECT ID,CategoryID,faction,ReqLevel,GuildID,Name,cost FROM teleportmaster_locations WHERE CategoryID = \"%i\" ORDER BY ID",action); 
 		if(pResult){
-			error_log("TeleportMaster: Adding additional locations to a SubCat");
+			if(DEBUG_TELE) error_log("TeleportMaster: Adding additional locations to a SubCat");
 			do{
 				Field* pFields = pResult->Fetch();
 				if(ItemCount==10){
 					//Count is 10! We need a 'more' button!
-					error_log("TeleportMaster: 10 Items on menu, adding 'more' button: \"%i\"", pFields[0].GetInt32() + 200000);
+					if(DEBUG_TELE) error_log("TeleportMaster: 10 Items on menu, adding 'more' button: \"%i\"", pFields[0].GetInt32() + 200000);
 					player->ADD_GOSSIP_ITEM( 4, "More ->", GOSSIP_SENDER_MAIN,  pFields[0].GetInt32() + 200000);
 					ItemCount++;
 				}
@@ -171,7 +172,7 @@ void ProcessMenu_TeleportMaster(Player *player, Creature *Creature, uint32 actio
 	}
 		
 	//Add 'Prev' and 'Main Menu' buttons as needed
-	error_log("TeleportMaster: Adding 'Prev' and 'Main Menu' buttons for action: \"%i\" GroupId:\"%i\"",action,GroupID);
+	if(DEBUG_TELE) error_log("TeleportMaster: Adding 'Prev' and 'Main Menu' buttons for action: \"%i\" GroupId:\"%i\"",action,GroupID);
 	if(MoreLess>0 || locations){
 		if(action<2){
 			if(MoreLess==0)
@@ -211,7 +212,7 @@ void ProcessMenu_TeleportMaster(Player *player, Creature *Creature, uint32 actio
 			}
 			if(prevAction>0){
 				player->ADD_GOSSIP_ITEM( 4, "<- Prev", GOSSIP_SENDER_MAIN, prevAction + 400000 );
-				error_log("TeleportMaster: Prev1: \"%i\"", prevAction + 400000);
+				if(DEBUG_TELE) error_log("TeleportMaster: Prev1: \"%i\"", prevAction + 400000);
 			}
 			player->ADD_GOSSIP_ITEM( 4, "<- Main Menu", GOSSIP_SENDER_MAIN,  100000 );
 		}
@@ -227,7 +228,7 @@ void ProcessMenu_TeleportMaster(Player *player, Creature *Creature, uint32 actio
 bool GossipHello_TeleportMaster(Player *player, Creature *Creature)
 {
 	// Make sure we can access the Config file
-	if(!SD2Config.SetSource(_SCRIPTDEV2_CONFIG,true)){
+	if(!SD2Config.SetSource(_SCRIPTDEV2_CONFIG)){
 		player->CLOSE_GOSSIP_MENU();
 		error_log("TeleportMaster: Unable to open configuration file");
 		Creature->MonsterWhisper("I'm sorry, we are having technical difficulties.  Please check back later.", player->GetGUID());
@@ -269,7 +270,7 @@ void SendDefaultMenu_TeleportMaster(Player *player, Creature *Creature, uint32 a
 		action-=100000;
 		MoreLess = 1;   //This was a 'more' button click
 	}
-	error_log("TeleportMaster: Processing Default Menu using 'action': \"%i\"  ActionID: \"%i\" MoreLess: \"%i\" ",action,actionID,MoreLess);
+	if(DEBUG_TELE) error_log("TeleportMaster: Processing Default Menu using 'action': \"%i\"  ActionID: \"%i\" MoreLess: \"%i\" ",action,actionID,MoreLess);
 
 	// Main Menu Return
 	if(action==100000){
@@ -323,7 +324,7 @@ bool ItemUse_TeleportMaster_SummonStone(Player *Player, Item* pItem, const Spell
 	 return false;
 }
 
-void AddSC_TeleportMaster()
+void 
 {
     Script *newscript;
 	newscript                  = new Script;

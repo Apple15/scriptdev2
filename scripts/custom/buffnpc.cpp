@@ -9,7 +9,7 @@
 bool GossipHello_BuffNPC(Player* pPlayer, Creature* pCreature)
 {
 	Config SD2Config;
-	if(!SD2Config.SetSource(_SCRIPTDEV2_CONFIG,true))
+	if(!SD2Config.SetSource(_SCRIPTDEV2_CONFIG))
 		error_log("SD2: Unable to open configuration file");
 
 	if(SD2Config.GetBoolDefault("BuffNPC.OnlyGMs", false)) // If BuffNPC.OnlyGMs is enabled in scriptdev2.conf
@@ -83,7 +83,7 @@ if (pPlayer->isInCombat())
 }
 
 Config SD2Config;
-if(!SD2Config.SetSource(_SCRIPTDEV2_CONFIG,true))
+if(!SD2Config.SetSource(_SCRIPTDEV2_CONFIG))
 		error_log("SD2: Unable to open configuration file");
 	bool EnableSmallBuff = SD2Config.GetBoolDefault("BuffNPC.EnableSmallBuff", true);
 	bool EnableGreatBuff = SD2Config.GetBoolDefault("BuffNPC.EnableGreatBuff", true);

@@ -11,10 +11,11 @@
 
 extern Config SD2Config;
 extern std::string CopperToGold(uint32 copper);
+int DEBUG_ZEN = 0; //Set to 1 to see debugger messages in error logs
 
 void SummonTrainer_ZenMaster(Player* Player, Creature* Creature){
 	// Make sure we can access the Config file
-	if(!SD2Config.SetSource(_SCRIPTDEV2_CONFIG,true)){
+	if(!SD2Config.SetSource(_SCRIPTDEV2_CONFIG)){
 		Player->CLOSE_GOSSIP_MENU();
 		error_log("ZenMaster: Unable to open configuration file");
 		Creature->MonsterWhisper("I'm sorry, we are having technical difficulties.  Please check back later.", Player->GetGUID());
@@ -46,15 +47,15 @@ void SummonTrainer_ZenMaster(Player* Player, Creature* Creature){
 		case CLASS_WARLOCK:		 CreatureID = 92009; break;
 		case CLASS_WARRIOR:		 CreatureID = 92001; break;
 	}
-	Player->SummonCreature(CreatureID, Player->GetPositionX(), Player->GetPositionY(), Player->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 40000);
+	Player->SummonCreature(CreatureID, Player->GetPositionX(), Player->GetPositionY(), Player->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 20000);
 	Player->CLOSE_GOSSIP_MENU();
 }
 
 bool GossipHello_ZenMaster(Player* Player, Creature* Creature)
 {
-	error_log("ZenMaster: DK: \"%i\" DRUID: \"%i\" HUNTER: \"%i\" MAGE: \"%i\" PALADIN: \"%i\" PRIEST: \"%i\" ROGUE: \"%i\" SHAMAN: \"%i\" WARLOCK: \"%i\" WARRIOR: \"%i\"",CLASS_DEATH_KNIGHT,CLASS_DRUID,CLASS_HUNTER,CLASS_MAGE,CLASS_PALADIN,CLASS_PRIEST,CLASS_ROGUE,CLASS_SHAMAN,CLASS_WARLOCK,CLASS_WARRIOR);
+	if(DEBUG_ZEN)error_log("ZenMaster: DK: \"%i\" DRUID: \"%i\" HUNTER: \"%i\" MAGE: \"%i\" PALADIN: \"%i\" PRIEST: \"%i\" ROGUE: \"%i\" SHAMAN: \"%i\" WARLOCK: \"%i\" WARRIOR: \"%i\"",CLASS_DEATH_KNIGHT,CLASS_DRUID,CLASS_HUNTER,CLASS_MAGE,CLASS_PALADIN,CLASS_PRIEST,CLASS_ROGUE,CLASS_SHAMAN,CLASS_WARLOCK,CLASS_WARRIOR);
 	// Make sure we can access the Config file
-	if(!SD2Config.SetSource(_SCRIPTDEV2_CONFIG,true)){
+	if(!SD2Config.SetSource(_SCRIPTDEV2_CONFIG)){
 		Player->CLOSE_GOSSIP_MENU();
 		error_log("ZenMaster: Unable to open configuration file");
 		Creature->MonsterWhisper("I'm sorry, we are having technical difficulties.  Please check back later.", Player->GetGUID());
@@ -101,7 +102,7 @@ bool ItemUse_ZenMaster_SummonStone(Player *Player, Item* pItem, const SpellCastT
 	 if (Player->isInFlight() || Player->isDead() || Player->isInCombat() || !EnableStone)
         return true;
 	 outstring_log("Zen Master Summon Stone: Attempting to summon a Zen Master");
-	 Creature* ZenMaster = Player->SummonCreature(90010, Player->GetPositionX(), Player->GetPositionY(), Player->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 20000);
+	 Creature* ZenMaster = Player->SummonCreature(90010, Player->GetPositionX(), Player->GetPositionY(), Player->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
 	 return false;
 }
 
