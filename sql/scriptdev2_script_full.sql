@@ -3,7 +3,7 @@
 --
 
 DELETE FROM sd2_db_version;
-INSERT INTO sd2_db_version (version) VALUES ('ScriptDev2 (for MaNGOS 9832+) ');
+INSERT INTO sd2_db_version (version) VALUES ('ScriptDev2 (for MaNGOS 10112+) ');
 
 --
 -- Below contains data for table `script_texts` mainly used in C++ parts.
@@ -723,7 +723,9 @@ INSERT INTO script_texts (entry,content_default,sound,type,language,emote,commen
 (-1189031,'Horseman rise...',0,0,0,0,'horseman SAY_PLAYER1'),
 (-1189032,'Your time is night...',0,0,0,0,'horseman SAY_PLAYER2'),
 (-1189033,'You felt death once...',0,0,0,0,'horseman SAY_PLAYER3'),
-(-1189034,'Now, know demise!',0,0,0,0,'horseman SAY_PLAYER4');
+(-1189034,'Now, know demise!',0,0,0,0,'horseman SAY_PLAYER4'),
+
+(-1189035,'The master has fallen! Avenge him my brethren!',5834,1,0,0,'trainee SAY_TRAINEE_SPAWN');
 
 -- -1 209 000 ZUL'FARRAK
 

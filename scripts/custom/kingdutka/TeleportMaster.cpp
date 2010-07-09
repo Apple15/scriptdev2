@@ -324,7 +324,7 @@ bool ItemUse_TeleportMaster_SummonStone(Player *Player, Item* pItem, const Spell
 	 return false;
 }
 
-void 
+void AddSC_TeleportMaster()
 {
     Script *newscript;
 	newscript                  = new Script;
