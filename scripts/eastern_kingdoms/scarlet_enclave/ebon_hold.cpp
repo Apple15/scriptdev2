@@ -207,13 +207,14 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
                             case 9:
                                 DoScriptText(SAY_EXEC_TIME_6, m_creature, pPlayer);
                                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
-                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                                 break;
                             case 10: DoScriptText(SAY_EXEC_WAITING, m_creature, pPlayer); break;
                             case 11:
                                 DoScriptText(EMOTE_DIES, m_creature);
                                 m_creature->setDeathState(JUST_DIED);
                                 m_creature->SetHealth(0);
+								pPlayer->CompleteQuest(12742);
                                 return;
                         }
                         break;
@@ -235,13 +236,14 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
                             case 9:
                                 DoScriptText(SAY_EXEC_TIME_8, m_creature, pPlayer);
                                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
-                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                                 break;
                             case 10: DoScriptText(SAY_EXEC_WAITING, m_creature, pPlayer); break;
                             case 11:
                                 DoScriptText(EMOTE_DIES, m_creature);
                                 m_creature->setDeathState(JUST_DIED);
                                 m_creature->SetHealth(0);
+								pPlayer->CompleteQuest(12748);
                                 return;
                         }
                         break;
@@ -263,13 +265,14 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
                             case 9:
                                 DoScriptText(SAY_EXEC_TIME_3, m_creature, pPlayer);
                                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
-                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                                 break;
                             case 10: DoScriptText(SAY_EXEC_WAITING, m_creature, pPlayer); break;
                             case 11:
                                 DoScriptText(EMOTE_DIES, m_creature);
                                 m_creature->setDeathState(JUST_DIED);
                                 m_creature->SetHealth(0);
+								pPlayer->CompleteQuest(12744);
                                 return;
                         }
                         break;
@@ -291,13 +294,14 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
                             case 9:
                                 DoScriptText(SAY_EXEC_TIME_7, m_creature, pPlayer);
                                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
-                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                                 break;
                             case 10: DoScriptText(SAY_EXEC_WAITING, m_creature, pPlayer); break;
                             case 11:
                                 DoScriptText(EMOTE_DIES, m_creature);
                                 m_creature->setDeathState(JUST_DIED);
                                 m_creature->SetHealth(0);
+								pPlayer->CompleteQuest(12743);
                                 return;
                         }
                         break;
@@ -319,13 +323,14 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
                             case 9:
                                 DoScriptText(SAY_EXEC_TIME_4, m_creature, pPlayer);
                                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
-                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                                 break;
                             case 10: DoScriptText(SAY_EXEC_WAITING, m_creature, pPlayer); break;
                             case 11:
                                 DoScriptText(EMOTE_DIES, m_creature);
                                 m_creature->setDeathState(JUST_DIED);
                                 m_creature->SetHealth(0);
+								pPlayer->CompleteQuest(12750);
                                 return;
                         }
                         break;
@@ -347,13 +352,14 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
                             case 9:
                                 DoScriptText(SAY_EXEC_TIME_9, m_creature, pPlayer);
                                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
-                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                                 break;
                             case 10: DoScriptText(SAY_EXEC_WAITING, m_creature, pPlayer); break;
                             case 11:
                                 DoScriptText(EMOTE_DIES, m_creature);
                                 m_creature->setDeathState(JUST_DIED);
                                 m_creature->SetHealth(0);
+								pPlayer->CompleteQuest(12739);
                                 return;
                         }
                         break;
@@ -375,13 +381,14 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
                             case 9:
                                 DoScriptText(SAY_EXEC_TIME_5, m_creature, pPlayer);
                                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
-                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                                 break;
                             case 10: DoScriptText(SAY_EXEC_WAITING, m_creature, pPlayer); break;
                             case 11:
                                 DoScriptText(EMOTE_DIES, m_creature);
                                 m_creature->setDeathState(JUST_DIED);
                                 m_creature->SetHealth(0);
+								pPlayer->CompleteQuest(12745);
                                 return;
                         }
                         break;
@@ -403,13 +410,14 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
                             case 9:
                                 DoScriptText(SAY_EXEC_TIME_10, m_creature, pPlayer);
                                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
-                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                                 break;
                             case 10: DoScriptText(SAY_EXEC_WAITING, m_creature, pPlayer); break;
                             case 11:
                                 DoScriptText(EMOTE_DIES, m_creature);
                                 m_creature->setDeathState(JUST_DIED);
                                 m_creature->SetHealth(0);
+								pPlayer->CompleteQuest(12749);
                                 return;
                         }
                         break;
@@ -431,13 +439,14 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
                             case 9:
                                 DoScriptText(SAY_EXEC_TIME_1, m_creature, pPlayer);
                                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
-                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                                 break;
                             case 10: DoScriptText(SAY_EXEC_WAITING, m_creature, pPlayer); break;
                             case 11:
                                 DoScriptText(EMOTE_DIES, m_creature);
                                 m_creature->setDeathState(JUST_DIED);
                                 m_creature->SetHealth(0);
+								pPlayer->CompleteQuest(12747);
                                 return;
                         }
                         break;
@@ -459,13 +468,14 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
                             case 9:
                                 DoScriptText(SAY_EXEC_TIME_2, m_creature, pPlayer);
                                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
-                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                                m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                                 break;
                             case 10: DoScriptText(SAY_EXEC_WAITING, m_creature, pPlayer); break;
                             case 11:
                                 DoScriptText(EMOTE_DIES, m_creature);
                                 m_creature->setDeathState(JUST_DIED);
                                 m_creature->SetHealth(0);
+								pPlayer->CompleteQuest(12746);
                                 return;
                         }
                         break;

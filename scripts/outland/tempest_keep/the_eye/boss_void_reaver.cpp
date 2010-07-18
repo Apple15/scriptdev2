@@ -58,7 +58,7 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
     void Reset()
     {
         Pounding_Timer = 15000;
-        ArcaneOrb_Timer = 3000;
+        ArcaneOrb_Timer = 5000;
         KnockAway_Timer = 30000;
         Berserk_Timer = 600000;
 
@@ -137,17 +137,13 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
             if (target)
                 DoCastSpellIfCan(target, SPELL_ARCANE_ORB_MISSILE);
 
-            ArcaneOrb_Timer = 3000;
+            ArcaneOrb_Timer = 5000;
         }else ArcaneOrb_Timer -= diff;
 
         // Single Target knock back, reduces aggro
         if (KnockAway_Timer < diff)
         {
             DoCastSpellIfCan(m_creature->getVictim(),SPELL_KNOCK_AWAY);
-
-            //Drop 25% aggro
-            if (m_creature->getThreatManager().getThreat(m_creature->getVictim()))
-                m_creature->getThreatManager().modifyThreatPercent(m_creature->getVictim(),-25);
 
             KnockAway_Timer = 30000;
         }else KnockAway_Timer -= diff;

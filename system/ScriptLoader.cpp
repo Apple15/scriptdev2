@@ -290,7 +290,7 @@ extern void AddSC_trial_of_the_champion();
 extern void AddSC_northrend_beasts();                       //Crusaders' Coliseum, trial_of_the_crusader
 extern void AddSC_boss_jaraxxus();
 extern void AddSC_boss_anubarak_trial();
-extern void AddSC_faction_champions();
+extern void AddSC_boss_faction_champions();
 extern void AddSC_twin_valkyr();
 extern void AddSC_trial_of_the_crusader();
 extern void AddSC_instance_trial_of_the_crusader();
@@ -477,6 +477,7 @@ extern void AddSC_boss_laj();
 extern void AddSC_boss_warp_splinter();
 extern void AddSC_boss_kaelthas();                          //TK, the_eye
 extern void AddSC_boss_void_reaver();
+extern void AddSC_boss_alar();
 extern void AddSC_boss_high_astromancer_solarian();
 extern void AddSC_instance_the_eye();
 extern void AddSC_the_eye();
@@ -787,7 +788,7 @@ void AddScripts()
     AddSC_northrend_beasts();                               //Crusaders' Coliseum, trial_of_the_crusader
     AddSC_boss_jaraxxus();
     AddSC_boss_anubarak_trial();
-    AddSC_faction_champions();
+    AddSC_boss_faction_champions();
     AddSC_twin_valkyr();
     AddSC_trial_of_the_crusader();
     AddSC_instance_trial_of_the_crusader();
@@ -973,6 +974,7 @@ void AddScripts()
     AddSC_boss_warp_splinter();
     AddSC_boss_kaelthas();                                  //TK, the_eye
     AddSC_boss_void_reaver();
+	AddSC_boss_alar();
     AddSC_boss_high_astromancer_solarian();
     AddSC_instance_the_eye();
     AddSC_the_eye();

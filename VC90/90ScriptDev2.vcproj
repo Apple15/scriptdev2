@@ -2310,6 +2310,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\scripts\northrend\icecrown_citadel\icecrown_citadel\def_spire.h"
+							>
+						</File>
+						<File
 							RelativePath="..\scripts\northrend\icecrown_citadel\icecrown_citadel\gunship_battle.cpp"
 							>
 						</File>
@@ -2813,6 +2817,10 @@
 					<Filter
 						Name="the_eye"
 						>
+						<File
+							RelativePath="..\scripts\outland\tempest_keep\the_eye\boss_alar.cpp"
+							>
+						</File>
 						<File
 							RelativePath="..\scripts\outland\tempest_keep\the_eye\boss_astromancer.cpp"
 							>
